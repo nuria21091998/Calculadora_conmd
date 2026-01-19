@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<!-- DOCTYPE: Declaración que indica al navegador que este documento es HTML5 -->
+<!-- Esta línea SIEMPRE debe ir al inicio de cualquier página web moderna -->
+
+<html lang="es">
+<!-- Etiqueta HTML raíz: Contiene TODO el contenido de la página -->
+<!-- lang="es": Indica que el idioma del contenido es español (importante para accesibilidad y SEO) -->
+<!-- ALTERNATIVA: lang="en" para inglés, lang="fr" para francés, etc. -->
+
+<head>
+    <!-- HEAD: Sección de metadatos (información sobre la página que no se ve en pantalla) -->
+    <!-- Aquí van configuraciones, enlaces a CSS, JavaScript, fuentes, etc. -->
+    
+    <meta charset="UTF-8">
+    <!-- charset="UTF-8": Define la codificación de caracteres (permite usar ñ, acentos, emojis, etc.) -->
+    <!-- IMPORTANTE: Siempre incluir esta línea para evitar problemas con caracteres especiales -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- viewport: Hace que la página sea responsive (se adapte a móviles y tablets) -->
+    <!-- width=device-width: El ancho se ajusta al dispositivo -->
+    <!-- initial-scale=1.0: Zoom inicial al 100% -->
+    <!-- EJERCICIO: Prueba cambiar initial-scale=2.0 y observa cómo la página inicia con zoom -->
+    
+    <title>Calculadora Simple</title>
+    <!-- TITLE: Texto que aparece en la pestaña del navegador -->
+    <!-- EJERCICIO: Cambia el título a "Mi Primera Calculadora Web" y observa la pestaña -->
+    
+    <style>
+        /* ========================================= */
+        /* SECCIÓN CSS: ESTILOS VISUALES DE LA PÁGINA */
+        /* ========================================= */
+        /* CSS define CÓMO se ven los elementos HTML (colores, tamaños, posiciones, etc.) */
+        
+        * {
+            /* Selector universal (*): Aplica estos estilos a TODOS los elementos HTML */
+            /* Se usa para resetear estilos por defecto del navegador */
+            
+            margin: 0;
+            /* margin: Espacio EXTERIOR alrededor del elemento. 0 = sin espacio */
+            /* EJERCICIO: Prueba margin: 20px; y observa cómo todo se separa de los bordes */
+            
+            padding: 0;
+            /* padding: Espacio INTERIOR dentro del elemento. 0 = sin espacio interno */
+            /* DIFERENCIA: margin empuja hacia afuera, padding empuja hacia adentro */
+            
+            box-sizing: border-box;
+            /* box-sizing: Define cómo se calculan las dimensiones de los elementos */
+            /* border-box: width y height incluyen padding y border (más predecible) */
+            /* ALTERNATIVA: content-box (comportamiento por defecto, menos intuitivo) */
+        }
+
+        body {
+            /* BODY: Estilos para el cuerpo principal de la página */
+            /* El body contiene todo el contenido visible */
+            
+            font-family: 'Courier New', monospace;
+            /* font-family: Define la tipografía (fuente) del texto */
+            /* 'Courier New': Fuente principal con aspecto de máquina de escribir */
+            /* monospace: Fuente de respaldo si Courier New no está disponible */
+            /* EJERCICIO: Prueba 'Arial', sans-serif para un aspecto más moderno */
+            
+            display: flex;
+            /* display: flex: Activa Flexbox (sistema moderno de diseño responsive) */
+            /* Flexbox facilita centrar elementos y crear layouts adaptativos */
+            /* ALTERNATIVA: display: grid; para layouts más complejos */
+            
+            justify-content: center;
+            /* justify-content: Alinea elementos horizontalmente en Flexbox */
+            /* center: Centra horizontalmente el contenido */
+            /* ALTERNATIVAS: flex-start (izquierda), flex-end (derecha), space-between */
+            
+            align-items: center;
+            /* align-items: Alinea elementos verticalmente en Flexbox */
+            /* center: Centra verticalmente el contenido */
+            /* RESULTADO: justify-content + align-items = centrado perfecto */
+            
+            min-height: 100vh;
+            /* min-height: Altura mínima del elemento */
+            /* 100vh: 100% del viewport height (altura de la ventana del navegador) */
+            /* ALTERNATIVA: height: 100vh; (pero min-height es más flexible) */
+            
+            background: #0a0e27;
+            /* background: Color de fondo en formato hexadecimal */
+            /* #0a0e27: Azul muy oscuro (casi negro) */
+            /* FORMATO HEX: #RRGGBB (Red, Green, Blue en hexadecimal) */
+            /* EJERCICIO: Prueba #1a1a2e para un tono más claro, o #000000 para negro puro */
+            
+            position: relative;
+            /* position: relative: Permite posicionar elementos hijos de forma absoluta */
+            /* Crea un contexto de posicionamiento para el ::before pseudo-elemento */
+            
+            overflow: hidden;
+            /* overflow: hidden: Oculta cualquier contenido que se salga del área */
+            /* Previene que la animación de fondo genere barras de desplazamiento */
+        }
+
+        body::before {
+            /* ::before: Pseudo-elemento que crea contenido ANTES del body */
+            /* Se usa para efectos visuales sin añadir HTML extra */
+            /* NOTA: Los pseudo-elementos son invisibles en el inspector HTML */
+            
+            content: '';
+            /* content: Obligatorio para que ::before funcione (aunque esté vacío) */
+            /* content: 'texto'; mostraría texto literal */
+            
+            position: absolute;
+            /* position: absolute: Posiciona el elemento respecto a su contenedor relative */
+            /* Se saca del flujo normal del documento */
+            
+            width: 200%;
+            height: 200%;
+            /* width y height al 200%: Hace el elemento más grande que la pantalla */
+            /* Necesario para que la animación de rotación no corte las esquinas */
+            
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 150, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 200, 255, 0.1) 0%, transparent 50%);
+            /* background con gradientes radiales: Crea efectos de luz circular */
+            /* radial-gradient: Transición suave de color desde un centro */
+            /* circle at 20% 50%: Centro del círculo (posición X, posición Y) */
+            /* rgba(255, 0, 150, 0.1): Color rosa con 10% de opacidad (último valor) */
+            /* 0% y 50%: Inicio y fin del gradiente (color sólido al 0%, transparente al 50%) */
+            /* EJERCICIO: Cambia 0.1 a 0.3 para hacer los efectos más visibles */
+            
+            animation: rotate 20s linear infinite;
+            /* animation: Define una animación CSS */
+            /* rotate: Nombre de la animación (definida abajo con @keyframes) */
+            /* 20s: Duración de la animación (20 segundos) */
+            /* linear: Velocidad constante (sin aceleración/desaceleración) */
+            /* infinite: Se repite indefinidamente */
+            /* ALTERNATIVAS: ease (con aceleración), ease-in-out (suave al inicio y fin) */
+        }
+
+        @keyframes rotate {
+            /* @keyframes: Define los pasos de una animación */
+            /* rotate: Nombre que usamos en animation: rotate arriba */
+            
+            0% { transform: rotate(0deg); }
+            /* 0%: Estado inicial de la animación (sin rotación) */
+            /* transform: rotate(0deg): Rotación de 0 grados */
+            
+            100% { transform: rotate(360deg); }
+            /* 100%: Estado final (rotación completa) */
+            /* 360deg: Una vuelta completa (360 grados) */
+            /* RESULTADO: El fondo gira continuamente creando efecto dinámico */
+            /* EJERCICIO: Añade 50% { transform: rotate(180deg) scale(1.5); } para variación */
+        }
+
+        .calculadora {
+            /* Selector de clase (.nombre): Se aplica a elementos con class="calculadora" */
+            /* Las clases son reutilizables (pueden aplicarse a múltiples elementos) */
+            
+            background: rgba(20, 25, 45, 0.95);
+            /* rgba: Color con transparencia (Red, Green, Blue, Alpha) */
+            /* rgba(20, 25, 45, 0.95): Azul oscuro con 95% opacidad (5% transparente) */
+            /* DIFERENCIA: rgb(20, 25, 45) sería 100% opaco, sin alpha */
+            
+            backdrop-filter: blur(10px);
+            /* backdrop-filter: Aplica efectos visuales al contenido DETRÁS del elemento */
+            /* blur(10px): Desenfoque de 10 píxeles (efecto de vidrio esmerilado) */
+            /* EJERCICIO: Prueba blur(20px) o blur(0px) para ver la diferencia */
+            /* NOTA: No funciona en navegadores antiguos (necesita prefijos -webkit-) */
+            
+            padding: 50px 40px;
+            /* padding: Espacio interno (arriba/abajo izquierda/derecha) */
+            /* 50px: Padding superior e inferior */
+            /* 40px: Padding izquierdo y derecho */
+            /* FORMATO COMPLETO: padding: arriba derecha abajo izquierda; */
+            
+            border-radius: 30px;
+            /* border-radius: Redondea las esquinas del elemento */
+            /* 30px: Radio de curvatura (más alto = más redondeado) */
+            /* EJERCICIO: Prueba 0px (cuadrado), 10px (poco redondeado), 50% (círculo) */
+            
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            /* border: Borde del elemento */
+            /* 2px: Grosor del borde */
+            /* solid: Estilo de línea continua (ALTERNATIVAS: dashed, dotted, double) */
+            /* rgba(0, 255, 255, 0.2): Cyan con 20% opacidad */
+            
+            box-shadow: 
+                0 0 60px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.05);
+            /* box-shadow: Crea sombras alrededor o dentro del elemento */
+            /* Formato: desplazamiento-x desplazamiento-y difuminado color */
+            /* 0 0 60px: Sin desplazamiento, difuminado de 60px (efecto de brillo) */
+            /* inset: Sombra INTERIOR (hacia dentro del elemento) */
+            /* EJERCICIO: Añade una tercera sombra: 10px 10px 30px rgba(0, 0, 0, 0.5) */
+            
+            width: 100%;
+            /* width: 100%: Ancho del 100% del contenedor padre */
+            /* Hace que la calculadora ocupe todo el ancho disponible */
+            
+            max-width: 450px;
+            /* max-width: Ancho máximo permitido */
+            /* 450px: No crecerá más allá de 450 píxeles (importante para pantallas grandes) */
+            /* RESULTADO: width: 100% + max-width: 450px = responsive pero controlado */
+            
+            position: relative;
+            /* position: relative: Permite posicionar elementos hijos absolutamente */
+            /* También mantiene el elemento en el flujo normal del documento */
+            
+            z-index: 1;
+            /* z-index: Controla el orden de apilamiento en el eje Z (profundidad) */
+            /* 1: Coloca este elemento por encima del fondo animado (que tiene z-index 0 por defecto) */
+            /* VALORES: números negativos van atrás, positivos adelante */
+        }
+
+        h1 {
+            /* h1: Selector de etiqueta (se aplica a todos los <h1>) */
+            /* h1 es el encabezado de nivel 1 (más importante semánticamente) */
+            
+            text-align: center;
+            /* text-align: Alineación horizontal del texto */
+            /* center: Centra el texto */
+            /* ALTERNATIVAS: left, right, justify */
+            
+            color: #00ffff;
+            /* color: Color del texto */
+            /* #00ffff: Cyan brillante (R:0, G:255, B:255) */
+            /* EJERCICIO: Prueba #ff00ff (magenta), #ffff00 (amarillo) */
+            
+            margin-bottom: 40px;
+            /* margin-bottom: Espacio EXTERIOR debajo del elemento */
+            /* 40px: Separa el título del resto del contenido */
+            
+            font-size: 32px;
+            /* font-size: Tamaño de la fuente */
+            /* 32px: Tamaño en píxeles (absoluto) */
+            /* ALTERNATIVAS: 2rem (relativo al root), 200% (relativo al padre) */
+            
+            text-transform: uppercase;
+            /* text-transform: Transforma el texto */
+            /* uppercase: Convierte todo a MAYÚSCULAS */
+            /* ALTERNATIVAS: lowercase, capitalize (Primera Letra Mayúscula) */
+            
+            letter-spacing: 4px;
+            /* letter-spacing: Espacio entre letras */
+            /* 4px: Añade 4 píxeles entre cada letra (efecto espaciado) */
+            /* EJERCICIO: Prueba valores negativos como -1px para comprimir */
+            
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            /* text-shadow: Sombra del texto (similar a box-shadow) */
+            /* 0 0 20px: Sin desplazamiento, difuminado de 20px (efecto de brillo) */
+            /* EJERCICIO: Añade 2px 2px 4px rgba(0,0,0,0.5) para sombra tradicional */
+            
+            font-weight: 900;
+            /* font-weight: Grosor de la fuente */
+            /* 900: Extra negrita (rango: 100-900, donde 400=normal, 700=bold) */
+            /* ALTERNATIVAS: normal, bold, bolder, lighter */
+        }
+
+        .campo {
+            /* .campo: Clase para cada contenedor de input y su label */
+            /* Agrupa visualmente cada campo del formulario */
+            
+            margin-bottom: 25px;
+            /* margin-bottom: 25px: Espacio entre cada campo */
+            /* EJERCICIO: Cambia a 10px para campos más compactos o 40px para más aire */
+            
+            position: relative;
+            /* position: relative: Permite posicionar elementos hijos si fuera necesario */
+            /* Útil si más adelante queremos añadir iconos dentro de los inputs */
+        }
+
+        label {
+            /* label: Etiqueta de texto para los inputs */
+            /* BUENA PRÁCTICA: Siempre usar labels para accesibilidad */
+            
+            display: block;
+            /* display: block: Hace que el label ocupe toda la línea */
+            /* Resultado: El label estará encima del input, no al lado */
+            /* ALTERNATIVA: display: inline-block; para labels al lado de inputs */
+            
+            margin-bottom: 10px;
+            /* margin-bottom: Espacio entre el label y el input */
+            
+            color: #00ffff;
+            /* color: Color cyan para mantener la coherencia visual */
+            
+            font-weight: 700;
+            /* font-weight: 700: Negrita (equivalente a 'bold') */
+            
+            font-size: 13px;
+            /* font-size: Tamaño pequeño para labels (jerarquía visual) */
+            
+            text-transform: uppercase;
+            /* text-transform: uppercase: Labels en mayúsculas (diseño moderno) */
+            
+            letter-spacing: 2px;
+            /* letter-spacing: Espaciado para mejorar legibilidad */
+            
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            /* text-shadow: Efecto de brillo sutil en los labels */
+        }
+
+        input[type="number"],
+        select {
+            /* Selector múltiple: Aplica estilos a inputs numéricos Y selects */
+            /* [type="number"]: Selector de atributo (selecciona por atributo HTML) */
+            /* NOTA: Separados por coma = mismo estilo para ambos */
+            
+            width: 100%;
+            /* width: 100%: Los inputs ocupan todo el ancho del contenedor */
+            
+            padding: 15px 20px;
+            /* padding: Espacio interno (vertical horizontal) */
+            /* 15px arriba/abajo, 20px izquierda/derecha */
+            /* Hace los inputs más cómodos de usar (área clickeable más grande) */
+            
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            /* border: Borde cyan semi-transparente */
+            /* 2px: Grosor visible pero no intrusivo */
+            
+            border-radius: 15px;
+            /* border-radius: Esquinas redondeadas para suavizar el diseño */
+            
+            font-size: 18px;
+            /* font-size: Tamaño legible para los valores ingresados */
+            
+            font-family: 'Courier New', monospace;
+            /* font-family: Hereda la fuente del body para consistencia */
+            /* NOTA: Los inputs no heredan font-family por defecto, hay que especificarlo */
+            
+            transition: all 0.3s ease;
+            /* transition: Suaviza cambios de propiedades CSS */
+            /* all: Anima TODAS las propiedades que cambien */
+            /* 0.3s: Duración de 0.3 segundos */
+            /* ease: Aceleración suave al inicio y fin */
+            /* EJERCICIO: Prueba transition: border 0.5s, box-shadow 0.3s; para animar selectivamente */
+            
+            background: rgba(10, 14, 39, 0.8);
+            /* background: Fondo oscuro semi-transparente */
+            /* 0.8: 80% opaco (20% transparente) */
+            
+            color: #00ffff;
+            /* color: Color del texto que el usuario escribe */
+            
+            font-weight: 600;
+            /* font-weight: 600: Semi-negrita para mejorar legibilidad */
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            /* :focus: Pseudo-clase que se activa cuando el elemento está enfocado */
+            /* Enfocado = cuando haces click en el input o llegas con TAB */
+            /* IMPORTANTE: Siempre estilizar :focus para mejorar experiencia de usuario */
+            
+            outline: none;
+            /* outline: none: Elimina el borde azul por defecto del navegador */
+            /* ADVERTENCIA: Solo remover si añadimos un estilo focus alternativo */
+            
+            border-color: #00ffff;
+            /* border-color: Cambia el color del borde a cyan brillante cuando está enfocado */
+            /* Feedback visual claro para el usuario */
+            
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.4),
+                inset 0 0 10px rgba(0, 255, 255, 0.1);
+            /* box-shadow: Efecto de brillo cuando el campo está activo */
+            /* inset: Sombra interna para efecto de profundidad */
+            /* RESULTADO: El campo "se ilumina" al hacer click en él */
+        }
+
+        input[type="number"]::placeholder {
+            /* ::placeholder: Pseudo-elemento para el texto de placeholder */
+            /* El placeholder es el texto que aparece cuando el input está vacío */
+            
+            color: rgba(0, 255, 255, 0.3);
+            /* color: Cyan muy transparente (30% opaco) */
+            /* El placeholder debe ser sutil, no competir con el valor real */
+        }
+
+        select {
+            /* select: Estilos adicionales específicos para el dropdown */
+            
+            cursor: pointer;
+            /* cursor: pointer: Cambia el cursor a "manita" al pasar sobre el select */
+            /* Indica visualmente que es clickeable */
+            /* ALTERNATIVAS: cursor: help, cursor: not-allowed, cursor: grab */
+            
+            appearance: none;
+            /* appearance: none: Elimina el estilo por defecto del navegador */
+            /* Permite crear un diseño personalizado del select */
+            /* NOTA: Necesario para que la flecha personalizada se vea correctamente */
+            
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2300ffff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+            /* background-image: Añade una imagen SVG como fondo */
+            /* data:image/svg+xml: SVG incrustado directamente en el CSS (Data URI) */
+            /* %3C = <, %3E = >, %23 = # (caracteres codificados para URL) */
+            /* CONTENIDO: Un SVG de flecha apuntando hacia abajo */
+            /* VENTAJA: No necesita archivo externo, más rápido de cargar */
+            /* EJERCICIO: Cambia stroke='%2300ffff' a stroke='%23ff0095' para flecha rosa */
+            
+            background-repeat: no-repeat;
+            /* background-repeat: Evita que la imagen se repita */
+            /* ALTERNATIVAS: repeat, repeat-x, repeat-y */
+            
+            background-position: right 20px center;
+            /* background-position: Posiciona la flecha SVG */
+            /* right 20px: 20 píxeles desde el borde derecho */
+            /* center: Centrado verticalmente */
+            
+            padding-right: 50px;
+            /* padding-right: Espacio extra a la derecha para la flecha */
+            /* Evita que el texto del select se solape con la flecha */
+        }
+
+        select option {
+            /* option: Estiliza las opciones del menú desplegable */
+            /* LIMITACIÓN: Navegadores limitan mucho el estilo de options */
+            
+            background: #0a0e27;
+            /* background: Fondo oscuro para las opciones */
+            
+            color: #00ffff;
+            /* color: Texto cyan en las opciones */
+        }
+
+        .resultado-campo {
+            /* .resultado-campo: Clase especial para el campo de resultado */
+            /* Diferencia visualmente el resultado de los inputs de entrada */
+            
+            background: rgba(0, 255, 255, 0.05);
+            /* background: Fondo cyan muy sutil (5% opacidad) */
+            
+            border: 2px solid #ff0095;
+            /* border: Borde rosa para destacar el resultado */
+            /* #ff0095: Rosa magenta (contrasta con los inputs cyan) */
+            
+            color: #ff0095;
+            /* color: Texto rosa magenta (coherente con el borde) */
+            
+            font-size: 24px;
+            /* font-size: Más grande que los inputs normales para énfasis */
+            
+            font-weight: 900;
+            /* font-weight: Extra negrita para máxima legibilidad */
+            
+            text-align: center;
+            /* text-align: center: Centra el resultado */
+            /* Hace el resultado más prominente visualmente */
+            
+            text-shadow: 0 0 10px rgba(255, 0, 149, 0.5);
+            /* text-shadow: Brillo rosa alrededor del texto */
+            
+            box-shadow: 
+                0 0 30px rgba(255, 0, 149, 0.3),
+                inset 0 0 15px rgba(255, 0, 149, 0.1);
+            /* box-shadow: Efecto de brillo rosa exterior e interior */
+            /* RESULTADO: El campo de resultado parece "brillar" con luz rosa */
+        }
+
+        .icono-resultado {
+            /* .icono-resultado: Clase para el icono decorativo (flecha ⬇️) */
+            /* Elemento puramente visual que guía la atención del usuario */
+            
+            text-align: center;
+            /* text-align: center: Centra el emoji de la flecha */
+            
+            font-size: 28px;
+            /* font-size: Tamaño grande para que sea visible */
+            
+            margin: 25px 0;
+            /* margin: 25px arriba y abajo, 0 izquierda y derecha */
+            /* Crea espacio alrededor del icono */
+            
+            color: #00ffff;
+            /* color: Cyan para mantener coherencia visual */
+            
+            animation: pulse 2s ease-in-out infinite;
+            /* animation: Anima el icono con un efecto de pulsación */
+            /* pulse: Nombre de la animación (definida abajo) */
+            /* 2s: Cada pulsación dura 2 segundos */
+            /* ease-in-out: Suave al inicio y al final */
+            /* infinite: Se repite eternamente */
+            
+            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.8));
+            /* filter: drop-shadow: Similar a text-shadow pero para cualquier elemento */
+            /* Añade un brillo cyan alrededor del emoji */
+            /* DIFERENCIA: drop-shadow respeta la forma del elemento, box-shadow no */
+        }
+
+        @keyframes pulse {
+            /* @keyframes pulse: Define la animación de pulsación */
+            
+            0%, 100% { 
+                /* 0% y 100%: Estado inicial y final (mismo estado = loop suave) */
+                transform: scale(1); 
+                /* scale(1): Tamaño normal (100%) */
+                opacity: 1; 
+                /* opacity: 1: Totalmente visible (100%) */
+            }
+            50% { 
+                /* 50%: Punto medio de la animación */
+                transform: scale(1.2); 
+                /* scale(1.2): 120% del tamaño original (crece) */
+                opacity: 0.7; 
+                /* opacity: 0.7: 70% visible (se atenúa ligeramente) */
+            }
+            /* RESULTADO: El icono crece y se atenúa, luego vuelve a su estado original */
+            /* EJERCICIO: Añade 25% { transform: scale(1.1); } para más pasos */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- BODY: Aquí comienza el contenido VISIBLE de la página -->
+    <!-- Todo lo que vemos en pantalla va dentro del <body> -->
+    
+    <div class="calculadora">
+        <!-- DIV: Contenedor genérico (Division) -->
+        <!-- class="calculadora": Aplica los estilos CSS de .calculadora -->
+        <!-- Este div agrupa toda la calculadora para aplicarle estilos como un bloque -->
+        
+        <h1>🧮 Calculadora</h1>
+        <!-- H1: Encabezado de nivel 1 (el más importante semánticamente) -->
+        <!-- BUENA PRÁCTICA: Solo un H1 por página para SEO y accesibilidad -->
+        <!-- 🧮: Emoji de ábaco (funciona gracias a charset="UTF-8") -->
+        <!-- EJERCICIO: Cambia el emoji por 🔢 o 🧾 para variar el diseño -->
+        
+        <div class="campo">
+            <!-- DIV con clase "campo": Agrupa el label y el input del primer número -->
+            <!-- Facilita aplicar estilos y mantener organizado el código -->
+            
+            <label for="numero1">Primer número:</label>
+            <!-- LABEL: Etiqueta descriptiva para el input -->
+            <!-- for="numero1": Vincula el label al input con id="numero1" -->
+            <!-- BENEFICIO: Al hacer click en el label, el input se enfoca (mejor UX y accesibilidad) -->
+            <!-- BUENA PRÁCTICA: Siempre vincular labels e inputs con for e id -->
+            
+            <input type="number" id="numero1" placeholder="Ingresa el primer número" step="any">
+            <!-- INPUT: Campo de entrada de datos -->
+            <!-- type="number": Solo permite números (muestra teclado numérico en móviles) -->
+            <!-- id="numero1": Identificador único (usado por el label y JavaScript) -->
+            <!-- placeholder: Texto de ayuda que desaparece al escribir -->
+            <!-- step="any": Permite decimales (sin step solo permite enteros) -->
+            <!-- ALTERNATIVAS: step="0.01" para dos decimales, step="1" para solo enteros -->
+            <!-- EJERCICIO: Añade min="0" max="999" para limitar el rango de valores -->
+        </div>
+
+        <div class="campo">
+            <!-- Segundo campo: Estructura idéntica al primero -->
+            
+            <label for="numero2">Segundo número:</label>
+            <!-- for="numero2": Vincula al input con id="numero2" -->
+            
+            <input type="number" id="numero2" placeholder="Ingresa el segundo número" step="any">
+            <!-- type="number": Campo numérico -->
+            <!-- NOTA: Cada input necesita un id único para que los labels funcionen -->
+        </div>
+
+        <div class="campo">
+            <!-- Tercer campo: Para seleccionar la operación -->
+            
+            <label for="operacion">Operación:</label>
+            <!-- for="operacion": Vincula al select con id="operacion" -->
+            
+            <select id="operacion">
+                <!-- SELECT: Lista desplegable (dropdown) -->
+                <!-- id="operacion": Identificador único para JavaScript y el label -->
+                
+                <option value="">Selecciona una operación</option>
+                <!-- OPTION: Cada opción del menú desplegable -->
+                <!-- value="": Valor vacío (no se realizará cálculo si está seleccionado) -->
+                <!-- Este es el texto mostrado inicialmente (opción por defecto) -->
+                <!-- BUENA PRÁCTICA: Primera opción vacía como placeholder -->
+                
+                <option value="suma">➕ Suma</option>
+                <!-- value="suma": Valor que se enviará al JavaScript -->
+                <!-- ➕ Suma: Texto visible para el usuario -->
+                <!-- NOTA: value es lo que lee JavaScript, el texto es lo que ve el usuario -->
+                
+                <option value="resta">
