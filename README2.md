@@ -134,4 +134,12 @@ Este transcriptor de imagen a texto es una herramienta educativa y práctica que
 
 ✨ Perfecta como ejemplo de proyecto para estudiantes de desarrollo web y aplicaciones con IA.
 
+# Tareas pendientes:
+-[x] Añadir funciones de memoria
+-[ ] Incluir conversión de binario a hex
+-[ ] Añadir pin de usuario
+
+# Imagen desde una URL: 
+!(https://www.google.com/search?sca_esv=20541e4f21a9d7f7&rlz=1C1CHBF_esES887ES887&sxsrf=ANbL-n5qJdCoW9-pbKL4hv1SS6JFPawxzA:1769018679242&udm=2&fbs=ADc_l-bpk8W4E-qsVlOvbGJcDwpn60DczFdcvPnuv8WQohHLTQJsEgZIYkjbgWUViY9fymCsEj5-iTw1ZBXJcBGEDo_p39R627zCGsmyR1IXP-iKB_rjD9C6hyQEEmccDSGu_aGHddtvDZZ2Z0ANqbinDya-l7Pr5ellGWSwOSwoH-wluJSZvIJiyC953j_uZEUQpEu0NykkN7GPxlqWwF6w86aBydIeAQ&q=microprocesador+6502&sa=X&sqi=2&ved=2ahUKEwjTkeiPnJ2SAxV7OPsDHQp1B9EQtKgLegQIIhAB&biw=926&bih=620&dpr=1.25&aic=0#sv=CAMSVhoyKhBlLWc4YUtkR29kbEhqMjFNMg5nOGFLZEdvZGxIajIxTToOWE5CY3FTenhpQjJsbE0gBCocCgZtb3NhaWMSEGUtZzhhS2RHb2RsSGoyMU0YADABGAcg2bC04AcwAkoKCAEQAhgCIAIoAg)
+
 ---
