@@ -140,7 +140,8 @@ Este transcriptor de imagen a texto es una herramienta educativa y práctica que
 -[ ] Añadir pin de usuario
 
 # Imagen desde una URL: 
-![microprocesador](<img width="790" height="287" alt="image" src="https://github.com/user-attachments/assets/bbf6008d-f4d4-43bc-8848-26f5049fc296" />
+![microprocesador](https://upload.wikimedia.org/wikipedia/commons/4/49/MOS_6502AD_4585_top.jpg)
+6" />
 )
 
 ---
